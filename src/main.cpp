@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdlib.h>
+#include <stdexcept>
 
 #include "..\headers\graph.hpp"
 
@@ -35,18 +36,15 @@ int main()
         std::string vertex;
         cin >> vertex;
         cout << endl << endl;
+        
 
-        try
+        if(!graph->addVertex(vertex))
+          cout << "Um erro ocorreu" << endl;
+        else
         {
-          graph->addVertex(vertex);
+          cout << "Valor inserido com sucesso" << endl << endl;
+          cout << *graph;
         }
-        catch(std::exception e)
-        {
-          cout << e.what();
-        }
-
-        cout << "Valor inserido com sucesso" << endl << endl;
-        cout << *graph;
         break;
       }
 
@@ -67,17 +65,13 @@ int main()
         cin >> weight;
         cout << endl;
 
-        try
+        if(!graph->addEdge(source, destination, weight))
+          cout << "Um erro ocorreu" << endl;
+        else
         {
-          graph->addEdge(source, destination, weight);
+          cout << endl << endl;
+          cout << *graph;
         }
-        catch(std::exception e)
-        {
-          cout << e.what();
-        }
-
-        cout << endl << endl;
-        cout << *graph;
 
         break;
       }
@@ -89,15 +83,14 @@ int main()
         cin >> vert;
         cout << endl;
 
-        try
+        if(!graph->deleteVertex(vert))
+          cout << "Um erro ocorreu" << endl;
+        else
         {
-          graph->deleteVertex(vert);
+          cout << endl << endl;
+          cout << *graph;
         }
-        catch(std::exception e)
-        {
-          cout << e.what();
-        }
-        cout << *graph;
+
         break;
       }
 
@@ -113,16 +106,14 @@ int main()
         cin >> dest;
         cout << endl;
 
-        try
-        {
-          graph->deleteEdge(src, dest);
-        }
-        catch(std::exception e)
-        {
-          cout << e.what();
-        }
 
-        cout << *graph;
+        if(!graph->deleteEdge(src, dest))
+          cout << "Um erro ocorreu" << endl;
+        else
+        {
+          cout << endl << endl;
+          cout << *graph;
+        }
 
         break;
       }
@@ -141,7 +132,12 @@ int main()
 
         int weight = graph->getWeight(src, dest);
 
-        cout << "Peso: " << weight;
+        if(weight == -1)
+          cout << "Um ou ambos os vertices nao exsitem no grafo" << endl;
+        else if (weight == 0)
+          cout << "Nao ha caminho entre esses vertices" << endl;
+        else
+          cout << "Peso: " << weight;
 
         cout << endl << endl;
 

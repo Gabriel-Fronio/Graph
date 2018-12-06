@@ -27,15 +27,16 @@ class Graph {
       return this->vet;
     };
 
-    void addVertex(T vertex)
+    bool addVertex(T vertex)
     {
       if(std::find(this->vet.begin(), this->vet.end(), vertex) != this->vet.end())
-        throw new std::invalid_argument("Vertice ja existe no grafo");
+        return false;
 
       this->vet.push_back(vertex);
+      return true;
     };
 
-    void addEdge(const T& source, const T& destination, int weight)
+    bool addEdge(const T& source, const T& destination, int weight)
     {
       int indexSrc;
       int indexDest;
@@ -46,21 +47,23 @@ class Graph {
       }
       catch(std::exception e)
       {
-        throw new std::exception(e);
+        return false;
       }
 
       if(indexSrc == indexDest)
-        throw new std::invalid_argument("Destino nao pode ser igual a origem");
+        return false;
 
       this->matrix.addElement(weight, indexSrc, indexDest);
       this->matrix.addElement(weight, indexDest, indexSrc);
+
+      return true;
     }
 
-    void deleteVertex(T vertex)
+    bool deleteVertex(T vertex)
     {
       auto it = std::find(this->vet.begin(), this->vet.end(), vertex);
       if(it == this->vet.end())
-        throw new std::invalid_argument("Vertice nao existe no grafo");
+        return false;
 
       int index = std::distance(this->vet.begin(), it);
 
@@ -71,9 +74,10 @@ class Graph {
       }
 
       this->vet.erase(it);
+      return true;
     }
     
-    void deleteEdge(const T& source, const T& destination)
+    bool deleteEdge(const T& source, const T& destination)
     {
       int indexSrc;
       int indexDest;
@@ -84,29 +88,25 @@ class Graph {
       }
       catch(std::exception e)
       {
-        throw new std::exception(e);
+        return false;
       }
 
       if(indexSrc == indexDest)
-        throw new std::invalid_argument("Destino nao pode ser igual a origem");
+        return false;
 
       this->matrix.addElement(0, indexSrc, indexDest);
       this->matrix.addElement(0, indexDest, indexSrc);
+
+      return true;
     }
 
     int getWeight(const T& source, const T& destination) const
     {
-      int indexSrc;
-      int indexDest;
-      try
-      {
-        indexSrc = findIndexOf(source);
-        indexDest = findIndexOf(destination);
-      }
-      catch(std::exception e)
-      {
-        throw new std::exception(e);
-      }
+      int indexSrc = findIndexOf(source);
+      int indexDest = findIndexOf(destination);
+
+      if(indexSrc < 0 || indexDest < 0)
+        return -1;
 
       return this->matrix.getInfo(indexSrc, indexDest);
     }
@@ -115,7 +115,7 @@ class Graph {
     {
       auto it = std::find(this->vet.begin(), this->vet.end(), elem);
       if(it == this->vet.end())
-        throw new std::invalid_argument("Vertice nao existe no grafo");
+        return -1;
 
       return std::distance(this->vet.begin(), it);
     }
